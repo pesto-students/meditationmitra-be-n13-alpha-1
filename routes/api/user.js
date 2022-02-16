@@ -1,9 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const { crossOriginResourcePolicy } = require("helmet");
-
-
-
 // Models and Helpers
 const {auth,generateToken} = require("../../middleware/auth");
 const Course = require("../../models/course");
@@ -53,6 +50,5 @@ router.get("/profile",auth,async (req, res) => {
   const courses = await Course.find({ _id: { $in: user.courses } })
   user.courses= courses;
   res.send(user);
-});
 
 module.exports = router;
