@@ -50,5 +50,5 @@ router.get("/profile",auth,async (req, res) => {
   const courses = await Course.find({ _id: { $in: user.courses } })
   user.courses= courses;
   res.send(user);
-
+});
 module.exports = router;
