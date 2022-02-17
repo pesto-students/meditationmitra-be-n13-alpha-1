@@ -23,7 +23,7 @@ const upload = multer({
 
 
 // Get all courses
-router.get("/:course_query" ,async (req, res) => {
+router.get("/" ,async (req, res) => {
   const courses = await Courses.find();
   res.send(courses);
 });
