@@ -5,7 +5,7 @@ const courseRoutes = require("./api/course");
 
 // api routes
 router.use("/user", userRoutes);
-router.use("/course", courseRoutes);
+router.use("/courses", courseRoutes);
 router.get("/", (req,res)=>{
     res.send("home api")
 })
