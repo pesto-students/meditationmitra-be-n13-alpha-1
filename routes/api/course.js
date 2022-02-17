@@ -3,9 +3,24 @@ const router = express.Router();
 const {auth} = require("../../middleware/auth");
 // import Multer for Image uploads
 const multer = require("multer");
-const upload = multer({ dest: "uploads/images/courses" });
+
+//Configuration for Multer
+const multerStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads/images/courses");
+  },
+  filename: (req, file, cb) => {
+    const ext = file.mimetype.split("/")[1];
+    cb(null, `${file.fieldname}-${Date.now()}.${ext}`);
+  },
+});
+//Calling the "multer" Function
+const upload = multer({
+  storage: multerStorage,
+});
+
 // Models and Helpers
-const Courses = require("../../models/courses");
+const Courses = require("../../models/course");
 
 // Get all courses
 router.get("/", auth ,async (req, res) => {
@@ -28,7 +43,7 @@ router.get("/:course_query", auth ,async (req, res) => {
 
 
 // add new course
-router.post("/add-course", auth ,upload.file("course-image"),async(req,res)=>{
+router.post("/add-course", auth ,upload.single("course-image"),async(req,res)=>{
 const {file,body} = req;
 console.log(req.body);
 console.log(req.files);
