@@ -50,7 +50,7 @@ router.post("/add-course", auth ,upload.single("course-image"),async(req,res)=>{
   const host = req.hostname;
   const {name,startDate,courseDescription,section,category,rating,createdBy,price}= body;
   let existingCourse = await Courses.find({name})
-  if(existingCourse){
+  if(existingCourse.length > 0){
    return  res.status(503).send('Course Already Exist! Add another Course ');
   }
   const courseImage = `${protocol}://${host}`+`/uploads/courses/`+file.filename;
