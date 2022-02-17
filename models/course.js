@@ -5,31 +5,33 @@ const { Schema } = Mongoose;
 // Courses Schema
 const CourseSchema = new Schema({
   _id: Mongoose.Schema.Types.ObjectId,
-  title: {
-    type: String,
-  },
-  author: {
+  name: {
     type: String,
   },
   startDate: {
     type: String,
   },
-  createdAt: {
-    type: String,
-  },
   section: {
     type: Array,
-    default: [0],
+    default: [],
   },
   category: {
-    type: Mongoose.Schema.Types.ObjectId,
-    ref:  "Category"
+    type: String,
+    default:  "",
   },
+  rating:{
+    type: String,
+    default:  "0.00",
+  }, 
   createdBy:{
     type: Mongoose.Schema.Types.ObjectId,
     ref:  "User"
   },
-  created: {
+  price:{
+    type: String,
+    default:  "0.00",
+  },
+  createdOn: {
     type: Date,
     default: Date.now,
   },
