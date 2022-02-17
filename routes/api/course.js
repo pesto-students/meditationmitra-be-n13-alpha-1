@@ -3,11 +3,13 @@ const router = express.Router();
 const {auth} = require("../../middleware/auth");
 // import Multer for Image uploads
 const multer = require("multer");
+// Models and Helpers
+const Courses = require("../../models/course");
 
 //Configuration for Multer
 const multerStorage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "uploads/images/courses");
+    cb(null, "./uploads/images/courses");
   },
   filename: (req, file, cb) => {
     const ext = file.mimetype.split("/")[1];
@@ -19,18 +21,16 @@ const upload = multer({
   storage: multerStorage,
 });
 
-// Models and Helpers
-const Courses = require("../../models/course");
 
 // Get all courses
-router.get("/", auth ,async (req, res) => {
+router.get("/" ,async (req, res) => {
   const courses = await Courses.find();
   res.send(courses);
 });
 
 
 // Get a Specific course
-router.get("/:course_query", auth ,async (req, res) => {
+router.get("/search/:course_query" ,async (req, res) => {
   const {course_query} = req.params;
   const courses = await Courses.find({
     name:course_query,
@@ -44,10 +44,14 @@ router.get("/:course_query", auth ,async (req, res) => {
 
 // add new course
 router.post("/add-course", auth ,upload.single("course-image"),async(req,res)=>{
-const {file,body} = req;
-console.log(req.body);
-console.log(req.files);
-res.json({ message: "Successfully uploaded files" });
-
+  const {file,body} = req;
+  const {name,startDate,courseDescription,section,category,rating,createdBy,price}= body;
+  const {course_image} = file.filename;
+  const insertCourse = new Courses({courseImage:course_image,name,startDate,courseDescription,section,category,rating,createdBy,price}) ;
+  let course = await insertCourse.save();
+  if(!course) return res.status(400).send('Error Occured');
+  res.status(200).send(course);
+                 
 });
 module.exports = router;
+
