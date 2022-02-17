@@ -23,7 +23,7 @@ const upload = multer({
 
 
 // Get all courses
-router.get("/" ,async (req, res) => {
+router.get("/:course_query" ,async (req, res) => {
   const courses = await Courses.find();
   res.send(courses);
 });
@@ -45,13 +45,19 @@ router.get("/search/:course_query" ,async (req, res) => {
 // add new course
 router.post("/add-course", auth ,upload.single("course-image"),async(req,res)=>{
   const {file,body} = req;
+
+  const protocol = req.protocol;
+  const host = req.hostname;
   const {name,startDate,courseDescription,section,category,rating,createdBy,price}= body;
-  const {course_image} = file.filename;
-  const insertCourse = new Courses({courseImage:course_image,name,startDate,courseDescription,section,category,rating,createdBy,price}) ;
+  let existingCourse = await Courses.find({name})
+  if(existingCourse){
+   return  res.status(503).send('Course Already Exist! Add another Course ');
+  }
+  const courseImage = `${protocol}://${host}`+`/uploads/courses/`+file.filename;
+  const insertCourse = new Courses({courseImage,name,startDate,courseDescription,section,category,rating,createdBy,price}) ;
   let course = await insertCourse.save();
   if(!course) return res.status(400).send('Error Occured');
-  res.status(200).send(course);
-                 
+  res.status(200).send(course);                 
 });
 module.exports = router;
 
