@@ -4,11 +4,15 @@ const { Schema } = Mongoose;
 
 // Courses Schema
 const CourseSchema = new Schema({
-  _id: Mongoose.Schema.Types.ObjectId,
   name: {
     type: String,
+    required: true,
+    unique:true,
   },
   startDate: {
+    type: String,
+  },
+  courseDescription: {
     type: String,
   },
   section: {
@@ -30,6 +34,9 @@ const CourseSchema = new Schema({
   price:{
     type: String,
     default:  "0.00",
+  },
+  courseImage:{
+    type: String
   },
   createdOn: {
     type: Date,
