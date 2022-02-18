@@ -1,0 +1,47 @@
+const Mongoose = require("mongoose");
+
+const { Schema } = Mongoose;
+
+// Courses Schema
+const CourseSchema = new Schema({
+  name: {
+    type: String,
+    required: true,
+    unique:true,
+  },
+  startDate: {
+    type: String,
+  },
+  courseDescription: {
+    type: String,
+  },
+  section: {
+    type: Array,
+    default: [],
+  },
+  category: {
+    type: String,
+    default:  "",
+  },
+  rating:{
+    type: String,
+    default:  "0.00",
+  }, 
+  createdBy:{
+    type: Mongoose.Schema.Types.ObjectId,
+    ref:  "User"
+  },
+  price:{
+    type: String,
+    default:  "0.00",
+  },
+  courseImage:{
+    type: String
+  },
+  createdOn: {
+    type: Date,
+    default: Date.now,
+  },
+});
+
+module.exports = Mongoose.model("Course", CourseSchema);
