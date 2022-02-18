@@ -42,6 +42,15 @@ router.post("/update-role",auth, async (req, res, next) => {
   res.status(400).send("Invalid User");
 });
 
+// Get user ENrolled courses
+router.get("/entrolled", auth, async (req, res) => {
+  const { email } = req.user;
+  const user = await User.findOne({ email }).select({ courses: 1 }); 
+  const { courses } = user;
+  const coursesList = await Courses.find({ _id: { $in: courses } });
+  res.status(200).send(coursesList);
+});
+
 
 // Get Specific User
 router.get("/profile",auth,async (req, res) => {
@@ -49,6 +58,6 @@ router.get("/profile",auth,async (req, res) => {
   const user = await User.findOne({email});
   const courses = await Course.find({ _id: { $in: user.courses } })
   user.courses= courses;
-  res.send(user);
+  res.status(200).send(user);
 });
 module.exports = router;

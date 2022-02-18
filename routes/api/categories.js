@@ -9,3 +9,4 @@ router.get("/", async (req, res) => {
     const categories = await Categories.find();
     res.send(categories);
 });
+module.exports = router;
