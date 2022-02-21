@@ -60,7 +60,7 @@ router.get("/search/:course_query", async (req, res) => {
 // Get a Specific course by slug
 router.get("/:slug", async (req, res) => {
   const { slug } = req.params;
-  const courses = await Courses.find({ slug });
+  const courses = await Courses.findOne({ slug });
   res.status(200).send(courses);
 });
 
@@ -75,7 +75,7 @@ router.post(
       name,
       startDate,
       courseDescription,
-      section,
+      sections,
       category,
       rating,
       createdBy,
@@ -83,7 +83,7 @@ router.post(
     } = body;
     let existingCourse = await Courses.find({ name });
     if (existingCourse.length > 0) {
-      return res.status(503).send("Course Already Exist! Add another Course ");
+      return res.status(400).send("Course Already Exist! Add another Course ");
     }
     const slug = slugify(name, options);
     const courseImage = "https://mm-courses.s3.amazonaws.com/" + req.file.key;
@@ -93,7 +93,7 @@ router.post(
       slug,
       startDate,
       courseDescription,
-      section,
+      sections,
       category,
       rating,
       createdBy,
