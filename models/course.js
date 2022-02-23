@@ -27,6 +27,12 @@ const CourseSchema = new Schema({
     type: Number,
     default:  0,
   }, 
+  slug:{
+    type: String
+  },
+  author:{
+    type: String
+  },
   createdBy:{
     type: Mongoose.Schema.Types.ObjectId,
     ref:  "User"
