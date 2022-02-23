@@ -38,14 +38,7 @@ router.post("/update-role", auth, async (req, res, next) => {
   res.status(400).send("Invalid User");
 });
 
-// Get user ENrolled courses
-router.get("/enrolled", auth, async (req, res) => {
-  const { email } = req.user;
-  const user = await User.findOne({ email }).select({ courses: 1 });
-  const { courses } = user;
-  const coursesList = await Courses.find({ _id: { $in: courses } });
-  res.status(200).send(coursesList);
-});
+
 
 // Get Specific User
 router.get("/profile", auth, async (req, res) => {

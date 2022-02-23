@@ -10,6 +10,7 @@ const Meeting = require("google-meet-api").meet;
 
 // Models and Helpers
 const Course = require("../../models/course");
+const User = require("../../models/user");
 
 const courseKey = process.env.AWS_COURSES_KEY;
 //Configuration for Multer
@@ -53,12 +54,9 @@ router.get("/", async (req, res) => {
     let regex = new RegExp(`.*${search}.*`, "i");
     query.push({ name: { $regex: regex } });
   }
-  if (filter){
-  console.log("🚀 ~ file: courses.js ~ line 57 ~ router.get ~ filter", filter)
-    
+  if (filter){ 
     const filterData = JSON.parse(filter);
     const {category,rating,price} = filterData;
-    console.log("🚀 ~ file: courses.js ~ line 61 ~ router.get ~ filterData", filterData)
   if (category) {
     query.push({ category });
   }
@@ -77,10 +75,18 @@ router.get("/", async (req, res) => {
   res.status(200).send(courses);
 });
 
+// Get user ENrolled courses
+router.get("/enrolled", auth, async (req, res) => {
+  const { email } = req.user;
+  const user = await User.findOne({ email }).select({ courses: 1 });
+  const { courses } = user;
+  const coursesList = await Course.find({ _id: { $in: courses } });
+  res.status(200).send(coursesList);
+});
 // Get a Specific course by slug
 router.get("/slug/:slug", async (req, res) => {
   const { slug } = req.params;
-  const courses = await Courses.findOne({ slug });
+  const courses = await Course.findOne({ slug });
   res.status(200).send(courses);
 });
 
@@ -101,7 +107,7 @@ router.post(
       createdBy,
       price,
     } = body;
-    let existingCourse = await Courses.find({ name });
+    let existingCourse = await Course.find({ name });
     if (existingCourse.length > 0) {
       return res.status(400).send("Course Already Exist! Add another Course ");
     }
