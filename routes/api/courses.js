@@ -6,10 +6,12 @@ const { auth } = require("../../middleware/auth");
 // import Multer for Image uploads
 const multer = require("multer");
 var multerS3 = require("multer-s3");
+const Meeting = require("google-meet-api").meet;
 
 // Models and Helpers
 const Courses = require("../../models/course");
 
+const courseKey = process.env.AWS_COURSES_KEY;
 //Configuration for Multer
 
 aws.config.update({
@@ -22,7 +24,7 @@ var s3 = new aws.S3();
 var upload = multer({
   storage: multerS3({
     s3: s3,
-    bucket: "mm-courses",
+    bucket: courseKey,
     metadata: function (req, file, cb) {
       cb(null, { fieldName: file.fieldname });
     },
@@ -42,18 +44,27 @@ const options = {
 };
 // Get all courses
 router.get("/", async (req, res) => {
-  const courses = await Courses.find();
-  res.status(200).send(courses);
-});
-
-// Get a Specific course
-router.get("/search/:course_query", async (req, res) => {
-  const { course_query } = req.params;
-  const courses = await Courses.find({
-    name: course_query,
-    category: course_query,
-    createdBy: course_query,
-  });
+  const { search, filter } = req.params;
+  const { category, rating, price } = filter;
+  let query = [];
+  if (search) {
+    let regex = new RegExp(`.*${search}.*`, "i");
+    query.push({ name: { $regex: regex } });
+  }
+  if (category) {
+    query.push({ category });
+  }
+  if (rating?.length) {
+    query.push({ rating: { $in: rating } });
+  }
+  if (price) {
+    query.push({ price: { $lte: price.min, $gte: price.max } });
+  }
+  if (query.length) {
+    courses = await Course.find().and(query);
+  } else {
+    courses = await Course.find();
+  }
   res.status(200).send(courses);
 });
 
@@ -86,7 +97,7 @@ router.post(
       return res.status(400).send("Course Already Exist! Add another Course ");
     }
     const slug = slugify(name, options);
-    const courseImage = "https://mm-courses.s3.amazonaws.com/" + req.file.key;
+    const courseImage = "https://${courseKey}.s3.amazonaws.com/" + req.file.key;
     const insertCourse = new Courses({
       courseImage,
       name,
@@ -97,12 +108,33 @@ router.post(
       category,
       rating,
       createdBy,
-      price,
+      price
     });
     let course = await insertCourse.save();
     if (!course) return res.status(400).send("Error Occured");
     res.status(200).send(course);
   }
 );
+
+router.get("/g", (req, res) => {
+  Meeting({
+    clientId:
+      "349205355478-t21dp0v6hvo31gh642nj1apnest444e9.apps.googleusercontent.com",
+    clientSecret: "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",
+    refreshToken:
+      "1//0ghiSQ1hAq9ZsCgYIARAAGBASNwF-L9Irz1sH4KznaD8H6fCg_6v88fbF7kqrmg65Kqu_40utAfyhaL1hVjBQScYDn7krn3qFOMc",
+    date: "2022-02-22",
+    time: "10:59",
+    summary: "Meditation Mitra Session",
+    location: "Pune",
+    description: "description",
+  })
+    .then(function (result) {
+      console.log(result);
+      res.status(200).send(result);
+    })
+    .catch((e) => console.log(e));
+  // console.log(gmeetlink());
+});
 
 module.exports = router;

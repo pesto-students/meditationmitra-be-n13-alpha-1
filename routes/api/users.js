@@ -12,13 +12,13 @@ const multer = require("multer");
 var multerS3 = require('multer-s3')
 
 // // Get all users
-// router.get("/", async (req, res) => {
-//   const users = await User.find().populate("courses");
-//   res.send(users);
-// });
+router.get("/", async (req, res) => {
+  const users = await User.find().populate("courses");
+  res.send(users);
+});
 
 //Configuration for Multer
-
+const userKey = process.env.AWS_USERS_KEY
 aws.config.update({
   secretAccessKey: process.env.AWS_ACCESS_KEY,
   accessKeyId: process.env.AWS_KEY_ID,
@@ -29,7 +29,7 @@ var s3 = new aws.S3()
 var upload = multer({
 storage: multerS3({
   s3: s3,
-  bucket: 'mm-users',
+  bucket: userKey,
   metadata: function (req, file, cb) {
     cb(null, {fieldName: file.fieldname});
   },
@@ -40,20 +40,26 @@ storage: multerS3({
 })
 
 // Login post
-router.post("/login",upload.single("course-image"),async (req, res) => {
+router.post("/login",upload.single("avatar"),async (req, res) => {
+  const { file, body } = req;
   const {email,firstName,lastName} = req.body;
   let isNewUser=false;
-  
-  let use̥r =  await User.findOne({email}).catch((err)=>{console.log(err)});
-  if(!user){
-   const avatar ='https://mm-users.s3.amazonaws.com/'+ req.file.key ;
-   
+
+   const avatar =`https://${userKey}.s3.amazonaws.com/`+ req.file.key ; 
    const newUser = new User({email,firstName,lastName,avatar});
-    user = await newUser.save().catch((err)=>{console.log(err)});
-    isNewUser= true;
-  }
-  const token = generateToken(user);
-  res.status(200).send({user,isNewUser,token});
+    await newUser.save(function(err) {
+      if (err) {
+        if (err.name === 'MongoError' && err.code === 11000) {
+          // Duplicate username
+          return res.status(422).send({ isNewUser, user: 'User already exist!' });
+        }
+        // Some other error
+        return res.status(422).send(err);
+      }
+      const token = generateToken(user);
+      isNewUser = true;
+      res.status(200).send({user,isNewUser,token});
+    });
 });
 
 // Signup Post
@@ -70,7 +76,7 @@ router.post("/update-role",auth, async (req, res, next) => {
 });
 
 // Get user ENrolled courses
-router.get("/entrolled", auth, async (req, res) => {
+router.get("/enrolled", auth, async (req, res) => {
   const { email } = req.user;
   const user = await User.findOne({ email }).select({ courses: 1 }); 
   const { courses } = user;
