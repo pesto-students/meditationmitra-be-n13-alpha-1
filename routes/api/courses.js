@@ -47,26 +47,25 @@ const options = {
 router.get("/", async (req, res) => {
   const { search, filter } = req.query;
 
-  
   let query = [];
-  let courses=[];
+  let courses = [];
   if (search) {
     let regex = new RegExp(`.*${search}.*`, "i");
     query.push({ name: { $regex: regex } });
   }
-  if (filter){ 
+  if (filter) {
     const filterData = JSON.parse(filter);
-    const {category,rating,price} = filterData;
-  if (category) {
-    query.push({ category });
+    const { category, rating, price } = filterData;
+    if (category) {
+      query.push({ category });
+    }
+    if (rating?.length) {
+      query.push({ rating: { $in: rating } });
+    }
+    if (price) {
+      query.push({ price: { $lte: price.max, $gte: price.min } });
+    }
   }
-  if (rating?.length) {
-    query.push({ rating: { $in: rating } });
-  }
-  if (price) {
-    query.push({ price: { $lte: price.max, $gte: price.min } });
-  }
-}
   if (query.length) {
     courses = await Course.find().and(query);
   } else {
@@ -97,23 +96,25 @@ router.post(
   upload.single("course-image"),
   async (req, res) => {
     const { file, body } = req;
+    const { _id,firstName } = req.user;
     const {
       name,
       startDate,
       courseDescription,
       sections,
       category,
-      rating,
-      createdBy,
       price,
     } = body;
     let existingCourse = await Course.find({ name });
     if (existingCourse.length > 0) {
       return res.status(400).send("Course Already Exist! Add another Course ");
     }
+    const createdBy = _id;
+    const author = firstName;
+    const rating = Math.floor(Math.random() * 5) + 1;
     const slug = slugify(name, options);
-    const courseImage = "https://${courseKey}.s3.amazonaws.com/" + req.file.key;
-    const insertCourse = new Courses({
+    const courseImage = `https://${courseKey}.s3.amazonaws.com/` + req.file.key;
+    const insertCourse = new Course({
       courseImage,
       name,
       slug,
@@ -121,9 +122,10 @@ router.post(
       courseDescription,
       sections,
       category,
+      author,
       rating,
       createdBy,
-      price
+      price,
     });
     let course = await insertCourse.save();
     if (!course) return res.status(400).send("Error Occured");
