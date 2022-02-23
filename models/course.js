@@ -24,16 +24,16 @@ const CourseSchema = new Schema({
     default:  "",
   },
   rating:{
-    type: String,
-    default:  "0.00",
+    type: Number,
+    default:  0,
   }, 
   createdBy:{
     type: Mongoose.Schema.Types.ObjectId,
     ref:  "User"
   },
   price:{
-    type: String,
-    default:  "0.00",
+    type: Number,
+    default:  0,
   },
   courseImage:{
     type: String

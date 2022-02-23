@@ -9,7 +9,7 @@ var multerS3 = require("multer-s3");
 const Meeting = require("google-meet-api").meet;
 
 // Models and Helpers
-const Courses = require("../../models/course");
+const Course = require("../../models/course");
 
 const courseKey = process.env.AWS_COURSES_KEY;
 //Configuration for Multer
@@ -44,13 +44,21 @@ const options = {
 };
 // Get all courses
 router.get("/", async (req, res) => {
-  const { search, filter } = req.params;
-  const { category, rating, price } = filter;
+  const { search, filter } = req.query;
+
+  
   let query = [];
+  let courses=[];
   if (search) {
     let regex = new RegExp(`.*${search}.*`, "i");
     query.push({ name: { $regex: regex } });
   }
+  if (filter){
+  console.log("🚀 ~ file: courses.js ~ line 57 ~ router.get ~ filter", filter)
+    
+    const filterData = JSON.parse(filter);
+    const {category,rating,price} = filterData;
+    console.log("🚀 ~ file: courses.js ~ line 61 ~ router.get ~ filterData", filterData)
   if (category) {
     query.push({ category });
   }
@@ -58,8 +66,9 @@ router.get("/", async (req, res) => {
     query.push({ rating: { $in: rating } });
   }
   if (price) {
-    query.push({ price: { $lte: price.min, $gte: price.max } });
+    query.push({ price: { $lte: price.max, $gte: price.min } });
   }
+}
   if (query.length) {
     courses = await Course.find().and(query);
   } else {
