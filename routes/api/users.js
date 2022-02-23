@@ -15,7 +15,7 @@ router.get("/", async (req, res) => {
 router.post("/login",async (req, res) => {
   const {email,firstName,lastName,avatar} = req.body;
   let isNewUser=false;
-  let use̥r =  await User.findOne({email});
+  let user =  await User.findOne({email});
   if(!user){
    const newUser = new User({email,firstName,lastName,avatar});
     user = await newUser.save();
