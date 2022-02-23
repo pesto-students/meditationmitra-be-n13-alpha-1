@@ -78,7 +78,7 @@ router.get("/", async (req, res) => {
 });
 
 // Get a Specific course by slug
-router.get("/:slug", async (req, res) => {
+router.get("/slug/:slug", async (req, res) => {
   const { slug } = req.params;
   const courses = await Courses.findOne({ slug });
   res.status(200).send(courses);
@@ -132,8 +132,8 @@ router.get("/g", (req, res) => {
     clientSecret: "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",
     refreshToken:
       "1//0ghiSQ1hAq9ZsCgYIARAAGBASNwF-L9Irz1sH4KznaD8H6fCg_6v88fbF7kqrmg65Kqu_40utAfyhaL1hVjBQScYDn7krn3qFOMc",
-    date: "2022-02-22",
-    time: "10:59",
+    date: "2022-02-24",
+    time: "08:59",
     summary: "Meditation Mitra Session",
     location: "Pune",
     description: "description",
