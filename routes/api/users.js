@@ -13,25 +13,17 @@ router.get("/", async (req, res) => {
 });
 
 // Login post
-router.post("/login", async (req, res) => {
-  const { file, body } = req;
-  const { email, firstName, lastName, avatar } = req.body;
-  let isNewUser = false;
-
-  const newUser = new User({ email, firstName, lastName, avatar });
-  await newUser.save(function (err) {
-    if (err) {
-      if (err.name === "MongoError" && err.code === 11000) {
-        // Duplicate username
-        return res.status(422).send({ isNewUser, user: "User already exist!" });
-      }
-      // Some other error
-      return res.status(422).send(err);
-    }
-    const token = generateToken(user);
-    isNewUser = true;
-    res.status(200).send({ user, isNewUser, token });
-  });
+router.post("/login",upload.single("course-image"),async (req, res) => {
+  const {email,firstName,lastName,avatar} = req.body;
+  let isNewUser=false;
+  let use̥r =  await User.findOne({email});
+  if(!user){
+   const newUser = new User({email,firstName,lastName,avatar});
+    user = await newUser.save();
+    isNewUser= true;
+  }
+  const token = generateToken(user);
+  res.status(200).send({user,isNewUser,token});
 });
 
 // Signup Post
