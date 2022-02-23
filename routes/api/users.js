@@ -5,7 +5,6 @@ const { crossOriginResourcePolicy } = require("helmet");
 const { auth, generateToken } = require("../../middleware/auth");
 const Course = require("../../models/course");
 const User = require("../../models/user");
-
 // // Get all users
 router.get("/", async (req, res) => {
   const users = await User.find().populate("courses");
@@ -13,7 +12,7 @@ router.get("/", async (req, res) => {
 });
 
 // Login post
-router.post("/login",upload.single("course-image"),async (req, res) => {
+router.post("/login",async (req, res) => {
   const {email,firstName,lastName,avatar} = req.body;
   let isNewUser=false;
   let use̥r =  await User.findOne({email});
