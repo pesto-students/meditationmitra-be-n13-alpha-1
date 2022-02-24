@@ -82,11 +82,28 @@ router.get("/enrolled", auth, async (req, res) => {
   const coursesList = await Course.find({ _id: { $in: courses } });
   res.status(200).send(coursesList);
 });
+
+// Get a Specific course by slug
+router.get("/enrolled/:slug", auth, async (req, res) => {
+  const { slug } = req.params;
+  const course = await Course.findOne({ slug });
+  course.isPurchased = true;
+  if (req.user) {
+    const { email } = req.user;
+    const user = await User.findOne({ email }).select({ courses: 1 });
+    const { courses } = user;
+    if (courses?.find((c) => c.slug === slug)) {
+      course.isPurchased = true;
+    }
+  }
+  res.status(200).send(course);
+});
+
 // Get a Specific course by slug
 router.get("/slug/:slug", async (req, res) => {
   const { slug } = req.params;
-  const courses = await Course.findOne({ slug });
-  res.status(200).send(courses);
+  const course = await Course.findOne({ slug });
+  res.status(200).send(course);
 });
 
 // add new course
@@ -132,7 +149,8 @@ router.post(
     let course = await insertCourse.save();
     if (!course) return res.status(400).send("Error Occured");
     res.status(200).send(course);
-  });
+  }
+);
 
 router.get("/g", (req, res) => {
   Meeting({
