@@ -8,8 +8,9 @@ const UserSchema = new Schema({
   email: {
     type: String,
     required: true,
-    unique:true,
-    match: /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/
+    unique: true,
+    match:
+      /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/,
   },
   firstName: {
     type: String,
@@ -25,9 +26,9 @@ const UserSchema = new Schema({
     default: "member",
     enum: ["member", "coach"],
   },
-  userCourses: {
-    type: Mongoose.Schema.Types.ObjectId,
-    ref:  "Courses"
+  courses: {
+    type: Array,
+    default: [],
   },
   userUpdated: Date,
   userCreated: {
