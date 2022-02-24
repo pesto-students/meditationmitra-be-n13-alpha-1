@@ -10,21 +10,20 @@ router.get("/", async (req, res) => {
   const users = await User.find().populate("courses");
   res.send(users);
 });
-
-// Login post
-router.post("/login",async (req, res) => {
-  const {email,firstName,lastName,avatar} = req.body;
+// user login
+router.post("/login",upload.single("course-image"),async (req, res) => {
+  const {email,firstName,lastName} = req.body;
   let isNewUser=false;
-  let user =  await User.findOne({email});
+  let use̥r =  await User.findOne({email}).catch((err)=>{console.log(err)});
   if(!user){
+   const avatar ='https://mm-users.s3.amazonaws.com/'+ req.file.key ;
    const newUser = new User({email,firstName,lastName,avatar});
-    user = await newUser.save();
+    user = await newUser.save().catch((err)=>{console.log(err)});
     isNewUser= true;
   }
   const token = generateToken(user);
   res.status(200).send({user,isNewUser,token});
 });
-
 // Signup Post
 router.post("/update-role", auth, async (req, res, next) => {
   const { email } = req.user;

@@ -96,15 +96,9 @@ router.post(
   upload.single("course-image"),
   async (req, res) => {
     const { file, body } = req;
-    const { _id,firstName } = req.user;
-    const {
-      name,
-      startDate,
-      courseDescription,
-      sections,
-      category,
-      price,
-    } = body;
+    const { _id, firstName } = req.user;
+    const { name, startDate, courseDescription, sessions, category, price } =
+      body;
     let existingCourse = await Course.find({ name });
     if (existingCourse.length > 0) {
       return res.status(400).send("Course Already Exist! Add another Course ");
@@ -113,6 +107,14 @@ router.post(
     const author = firstName;
     const rating = Math.floor(Math.random() * 5) + 1;
     const slug = slugify(name, options);
+    const sections = [];
+    const sessionsObj = JSON.parse(sessions);
+    const keys = Object.keys(sessionsObj);
+    keys.forEach((key) => {
+      const section = sessionsObj[key];
+      section.isLocked = false;
+      sections.push(section);
+    });
     const courseImage = `https://${courseKey}.s3.amazonaws.com/` + req.file.key;
     const insertCourse = new Course({
       courseImage,
@@ -130,8 +132,7 @@ router.post(
     let course = await insertCourse.save();
     if (!course) return res.status(400).send("Error Occured");
     res.status(200).send(course);
-  }
-);
+  });
 
 router.get("/g", (req, res) => {
   Meeting({
