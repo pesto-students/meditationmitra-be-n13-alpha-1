@@ -14,14 +14,10 @@ router.get("/", async (req, res) => {
 router.post("/login", async (req, res) => {
   const { email, firstName, lastName, avatar } = req.body;
   let isNewUser = false;
-  let user = await User.findOne({ email }).catch((err) => {
-    console.log(err);
-  });
+  let user = await User.findOne({ email });
   if (!user) {
     const newUser = new User({ email, firstName, lastName, avatar });
-    user = await newUser.save().catch((err) => {
-      console.log(err);
-    });
+    user = await newUser.save();
     isNewUser = true;
   }
   const token = generateToken(user);
@@ -47,5 +43,21 @@ router.get("/profile", auth, async (req, res) => {
   const courses = await Course.find({ _id: { $in: user.courses } });
   user.courses = courses;
   res.status(200).send(user);
+});
+
+router.post("/enroll-course", auth, async (req, res) => {
+  const { email } = req.user;
+  const courseIds = req.body;
+  const user = await User.findOne({ email });
+  if (user) {
+    if (user.courses) {
+      if (courseIds.length) {
+        courseIds.forEach((id) => user.courses.push(id));
+      }
+    }
+    await user.save();
+    return res.status(200).send("course enrolled successfully");
+  }
+  res.status(401).send("Unathorized user");
 });
 module.exports = router;

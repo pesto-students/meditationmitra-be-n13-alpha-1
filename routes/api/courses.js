@@ -79,7 +79,9 @@ router.get("/enrolled", auth, async (req, res) => {
   const { email } = req.user;
   const user = await User.findOne({ email }).select({ courses: 1 });
   const { courses } = user;
+  console.log(courses);
   const coursesList = await Course.find({ _id: { $in: courses } });
+  console.log(coursesList);
   res.status(200).send(coursesList);
 });
 
@@ -92,7 +94,7 @@ router.get("/enrolled/:slug", auth, async (req, res) => {
     const { email } = req.user;
     const user = await User.findOne({ email }).select({ courses: 1 });
     const { courses } = user;
-    if (courses?.find((c) => c.slug === slug)) {
+    if (courses.find((c) => c === course._id)) {
       course.isPurchased = true;
     }
   }
