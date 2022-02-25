@@ -79,9 +79,7 @@ router.get("/enrolled", auth, async (req, res) => {
   const { email } = req.user;
   const user = await User.findOne({ email }).select({ courses: 1 });
   const { courses } = user;
-  console.log(courses);
   const coursesList = await Course.find({ _id: { $in: courses } });
-  console.log(coursesList);
   res.status(200).send(coursesList);
 });
 
@@ -89,13 +87,14 @@ router.get("/enrolled", auth, async (req, res) => {
 router.get("/enrolled/:slug", auth, async (req, res) => {
   const { slug } = req.params;
   const course = await Course.findOne({ slug });
-  // course.isPurchased = false;
   if (req.user) {
     const { email } = req.user;
     const user = await User.findOne({ email }).select({ courses: 1 });
     const { courses } = user;
-    if (courses.find((c) => c === course._id)) {
+    console.log(courses);
+    if (courses.find((id) => id === course._id.toString())) {
       course.isPurchased = true;
+      console.log(course);
     }
   }
   res.status(200).send(course);

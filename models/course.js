@@ -48,6 +48,10 @@ const CourseSchema = new Schema({
     type: Date,
     default: Date.now,
   },
+  isPurchased: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 module.exports = Mongoose.model("Course", CourseSchema);
