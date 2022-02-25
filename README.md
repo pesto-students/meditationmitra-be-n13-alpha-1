@@ -19,7 +19,9 @@
 
 ### 🏠 [Homepage](https://github.com/vaaiibhav/meditationmitra-be-n13-alpha-1#readme)
 
-### ✨ [Demo](https://meditationmitra.herokuapp.com/)
+### ✨ [Demo-Frontend](https://meditationmitra.herokuapp.com/)
+### ✨ [Demo-Backend](https://meditation-mitra.herokuapp.com/)
+!!! Data Hosted on Mongodb Atlas
 
 ## Install
 
@@ -33,11 +35,7 @@ npm install
 npm run start
 ```
 
-## Run tests
 
-```sh
-npm run test
-```
 
 ## Author
 
@@ -45,8 +43,13 @@ npm run test
 
 * Twitter: [@vaaiibhav](https://twitter.com/vaaiibhav)
 * Github: [@vaaiibhav](https://github.com/vaaiibhav)
-* LinkedIn: [@vaaiibhav](https://linkedin.com/in/vaaiibhav)
+* LinkedIn: [@vaaiibhav](https://www.linkedin.com/in/vaaiibhav/)
 
+
+👤 **Nukesh**
+
+* Github: [@nukeshpoodi](https://github.com/Nukeshpoodi)
+* LinkedIn: [@nukesh-poodi](https://www.linkedin.com/in/nukesh-poodi-03749355)
 ## 🤝 Contributing
 
 Contributions, issues and feature requests are welcome!<br />Feel free to check [issues page](https://github.com/vaaiibhav/meditationmitra-be-n13-alpha-1/issues). You can also take a look at the [contributing guide](https://github.com/vaaiibhav/meditationmitra-be-n13-alpha-1/blob/master/CONTRIBUTING.md).
