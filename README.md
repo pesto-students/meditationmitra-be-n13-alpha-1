@@ -50,6 +50,15 @@ npm start
 
 * Github: [@nukeshpoodi](https://github.com/Nukeshpoodi)
 * LinkedIn: [@nukesh-poodi](https://www.linkedin.com/in/nukesh-poodi-03749355)
+
+$$$ Mentor
+
+👤 **Shashank Suresh**
+
+* Github: [@ShashankSuresh](https://github.com/ShashankSuresh)
+* LinkedIn: [@shashank-suresh](https://in.linkedin.com/in/shashank-suresh)
+
+
 ## 🤝 Contributing
 
 Contributions, issues and feature requests are welcome!<br />Feel free to check [issues page](https://github.com/pesto-students/meditationmitra-be-n13-alpha-1/issues). You can also take a look at the [contributing guide](https://github.com/pesto-students/meditationmitra-be-n13-alpha-1/blob/master/CONTRIBUTING.md).
