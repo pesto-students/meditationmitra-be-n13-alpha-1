@@ -110,7 +110,7 @@ router.get("/enrolled/:slug", auth, async (req, res) => {
 router.get("/slug/:slug", async (req, res) => {
   const { slug } = req.params;
   const course = await Course.findOne({ slug });
-  res.status(200).send(course);
+  res.status(200).send({ course, coursesMeetLinks: [] });
 });
 
 // add new course
