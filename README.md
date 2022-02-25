@@ -1,4 +1,4 @@
-<h1 align="center">Welcome to Meditation Mitra 👋</h1>
+<h1 align="center">Welcome to Meditation Mitra Backend👋</h1>
 <p>
   <img alt="Version" src="https://img.shields.io/badge/version-2.0.0-blue.svg?cacheSeconds=2592000" />
   <a href="https://github.com/vaaiibhav/meditationmitra-be-n13-alpha-1#readme" target="_blank">
