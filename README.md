@@ -60,5 +60,4 @@ Give a ⭐️ if this project helped you!
 Copyright © 2022 [Vaaiibhav](https://github.com/vaaiibhav).<br />
 This project is [ISC](https://github.com/vaaiibhav/meditationmitra-be-n13-alpha-1/blob/master/LICENSE) licensed.
 
-***
-_This README was generated with ❤️ by [readme-md-generator](https://github.com/kefranabg/readme-md-generator)_
+
