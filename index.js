@@ -14,6 +14,11 @@ const routes = require('./routes');
 
 const { database, port } = keys;
 const app = express();
+const client = require('prom-client');
+const collectDefaultMetrics = client.collectDefaultMetrics;
+const Registry = client.Registry;
+const register = new Registry();
+collectDefaultMetrics({ register });
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -26,7 +31,6 @@ app.use(
 app.use(cors());
 app.use('/',routes);
 
-app.use('/uploads', express.static(path.resolve(__dirname, '/uploads/images/')));
 
 // Connect to MongoDB
 mongoose.set('useCreateIndex', true);
@@ -58,7 +62,8 @@ if (process.env.NODE_ENV !== 'production') {
       res.sendFile(path.resolve(__dirname, '../dist/index.html')); 
     });
   }
-  
+ 
+
 app.listen(port, () => {
     console.log(
       `${chalk.green('✓')} ${chalk.blue(

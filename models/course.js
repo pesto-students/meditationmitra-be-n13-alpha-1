@@ -7,7 +7,7 @@ const CourseSchema = new Schema({
   name: {
     type: String,
     required: true,
-    unique:true,
+    unique: true,
   },
   startDate: {
     type: String,
@@ -15,32 +15,42 @@ const CourseSchema = new Schema({
   courseDescription: {
     type: String,
   },
-  section: {
+  sections: {
     type: Array,
     default: [],
   },
   category: {
     type: String,
-    default:  "",
+    default: "",
   },
-  rating:{
+  rating: {
+    type: Number,
+    default: 0,
+  },
+  slug: {
     type: String,
-    default:  "0.00",
-  }, 
-  createdBy:{
+  },
+  author: {
+    type: String,
+  },
+  createdBy: {
     type: Mongoose.Schema.Types.ObjectId,
-    ref:  "User"
+    ref: "User",
   },
-  price:{
+  price: {
+    type: Number,
+    default: 0,
+  },
+  courseImage: {
     type: String,
-    default:  "0.00",
-  },
-  courseImage:{
-    type: String
   },
   createdOn: {
     type: Date,
     default: Date.now,
+  },
+  isPurchased: {
+    type: Boolean,
+    default: false,
   },
 });
 
