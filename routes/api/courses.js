@@ -46,7 +46,7 @@ const options = {
 // Get all courses
 router.get("/", async (req, res) => {
   const { search, filter } = req.query;
-
+  // console.log(search, filter);
   let query = [];
   let courses = [];
   if (search) {
@@ -56,7 +56,7 @@ router.get("/", async (req, res) => {
   if (filter) {
     const filterData = JSON.parse(filter);
     const { category, rating, price } = filterData;
-    if (category) {
+    if (category?.length) {
       query.push({ category });
     }
     if (rating?.length) {
@@ -66,6 +66,8 @@ router.get("/", async (req, res) => {
       query.push({ price: { $lte: price.max, $gte: price.min } });
     }
   }
+
+  // console.log(query);
   if (query.length) {
     courses = await Course.find().and(query);
   } else {
