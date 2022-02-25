@@ -153,22 +153,28 @@ router.post(
   }
 );
 
-router.get("/g", (req, res) => {
+router.post("/g", auth, (req, res) => {
+  const { email } = req.user;
+  const { courseId, sectionName } = req.body;
   Meeting({
     clientId:
       "349205355478-t21dp0v6hvo31gh642nj1apnest444e9.apps.googleusercontent.com",
     clientSecret: "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",
     refreshToken:
       "1//0ghiSQ1hAq9ZsCgYIARAAGBASNwF-L9Irz1sH4KznaD8H6fCg_6v88fbF7kqrmg65Kqu_40utAfyhaL1hVjBQScYDn7krn3qFOMc",
-    date: "2022-02-24",
+    date: "2022-02-29",
     time: "08:59",
     summary: "Meditation Mitra Session",
     location: "Pune",
     description: "description",
   })
-    .then(function (result) {
-      console.log(result);
-      res.status(200).send(result);
+    .then(async function (link) {
+      console.log(link);
+      const user = await User.findOne({ email });
+      user.coursesMeetLinks.push({ courseId, sectionName, link });
+      await user.save();
+      console.log("meet link", link);
+      res.status(200).send(link);
     })
     .catch((e) => console.log(e));
   // console.log(gmeetlink());
