@@ -35,6 +35,10 @@ const UserSchema = new Schema({
     type: Date,
     default: Date.now,
   },
+  coursesMeetLinks: {
+    type: Array,
+    default: [],
+  },
 });
 
 module.exports = Mongoose.model("User", UserSchema);
