@@ -87,17 +87,21 @@ router.get("/enrolled", auth, async (req, res) => {
 router.get("/enrolled/:slug", auth, async (req, res) => {
   const { slug } = req.params;
   const course = await Course.findOne({ slug });
+  let coursesMeetLinks = [];
   if (req.user) {
     const { email } = req.user;
-    const user = await User.findOne({ email }).select({ courses: 1 });
+    const user = await User.findOne({ email }).select({
+      courses: 1,
+      coursesMeetLinks: 1,
+    });
     const { courses } = user;
-    console.log(courses);
     if (courses.find((id) => id === course._id.toString())) {
       course.isPurchased = true;
       console.log(course);
+      coursesMeetLinks = user.coursesMeetLinks;
     }
   }
-  res.status(200).send(course);
+  res.status(200).send({ course, coursesMeetLinks });
 });
 
 // Get a Specific course by slug
@@ -162,7 +166,7 @@ router.post("/g", auth, (req, res) => {
     clientSecret: "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",
     refreshToken:
       "1//0ghiSQ1hAq9ZsCgYIARAAGBASNwF-L9Irz1sH4KznaD8H6fCg_6v88fbF7kqrmg65Kqu_40utAfyhaL1hVjBQScYDn7krn3qFOMc",
-    date: "2022-02-29",
+    date: "2022-03-01",
     time: "08:59",
     summary: "Meditation Mitra Session",
     location: "Pune",
@@ -173,7 +177,6 @@ router.post("/g", auth, (req, res) => {
       const user = await User.findOne({ email });
       user.coursesMeetLinks.push({ courseId, sectionName, link });
       await user.save();
-      console.log("meet link", link);
       res.status(200).send(link);
     })
     .catch((e) => console.log(e));
