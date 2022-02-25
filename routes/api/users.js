@@ -28,7 +28,7 @@ router.post("/update-role", auth, async (req, res, next) => {
   const { email } = req.user;
   const { role } = req.body;
   let user = await User.findOne({ email });
-  if (user.length > 0) {
+  if (user) {
     user.role = role;
     await user.save();
     return res.status(200).send({ user });
