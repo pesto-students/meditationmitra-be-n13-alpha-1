@@ -120,7 +120,7 @@ router.post(
   upload.single("course-image"),
   async (req, res) => {
     const { file, body } = req;
-    const { _id, firstName } = req.user;
+    const { _id, firstName, email } = req.user;
     const { name, startDate, courseDescription, sessions, category, price } =
       body;
     let existingCourse = await Course.find({ name });
@@ -154,6 +154,15 @@ router.post(
       price,
     });
     let course = await insertCourse.save();
+    const user = await User.findOne({ email });
+    if (user) {
+      if (user.courses) {
+        if (courseIds.length) {
+          courseIds.forEach((id) => user.courses.push(id));
+        }
+      }
+      await user.save();
+    }
     if (!course) return res.status(400).send("Error Occured");
     res.status(200).send(course);
   }
