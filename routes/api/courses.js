@@ -156,11 +156,7 @@ router.post(
     let course = await insertCourse.save();
     const user = await User.findOne({ email });
     if (user) {
-      if (user.courses) {
-        if (courseIds.length) {
-          courseIds.forEach((id) => user.courses.push(id));
-        }
-      }
+      if (user.courses) user.courses.push(course._id.toString());
       await user.save();
     }
     if (!course) return res.status(400).send("Error Occured");
